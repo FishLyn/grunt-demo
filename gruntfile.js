@@ -5,6 +5,7 @@ const loadGruntTasks = require('load-grunt-tasks')
 const sass = require('node-sass')
 
 const path = require('path')
+const { setFlagsFromString } = require('v8')
 
 const data = {
     menus: [
@@ -45,10 +46,8 @@ const data = {
 
 module.exports = grunt => {
 
-    const cwd = process.cwd()
-
     grunt.initConfig({
-        clean: [path.join(cwd, 'dist'), path.join(cwd, 'temp'), path.join(cwd, '.tmp')],
+        clean: ['dist', 'temp', '.tmp'],
         sass: {
             options: {
                 implementation: sass,
@@ -56,9 +55,13 @@ module.exports = grunt => {
                 sourceMap: true
             },
             main: {
-                files: {
-                    'temp/assets/styles/main.css': 'src/assets/styles/main.scss'
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'src/assets/styles',
+                    src: ['*.scss'],
+                    dest: 'temp/assets/styles',
+                    ext: '.css'
+                }]
             }
         },
         babel: {
@@ -67,9 +70,12 @@ module.exports = grunt => {
                 sourceMap: true
             },
             main: {
-                files: {
-                    'temp/assets/scripts/main.js': 'src/assets/scripts/main.js'
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'src/assets/scripts',
+                    src: ['*.js'],
+                    dest: 'temp/assets/scripts'
+                }]
             }
         },
         swigtemplates: {
@@ -102,6 +108,7 @@ module.exports = grunt => {
                     src: ['temp']
                 },
                 options: {
+                    notify: false,
                     open: true,
                     port: 3002,
                     watchTask: true,
@@ -118,6 +125,7 @@ module.exports = grunt => {
                     src: ['dist']
                 },
                 options: {
+                    notify: false,
                     open: true,
                     port:3003,
                     server: {
@@ -164,10 +172,12 @@ module.exports = grunt => {
                     minifyCSS: true,
                     minifyJS: true
                 },
-                files: {
-                    'dist/index.html': 'temp/index.html',
-                    'dist/about.html': 'temp/about.html'
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'temp',
+                    src: ['*.html'],
+                    dest: 'dist'
+                }]
             }
         }
     })
