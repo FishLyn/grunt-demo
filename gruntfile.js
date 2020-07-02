@@ -4,9 +4,6 @@ const loadGruntTasks = require('load-grunt-tasks')
 
 const sass = require('node-sass')
 
-const path = require('path')
-const { setFlagsFromString } = require('v8')
-
 const data = {
     menus: [
         {
@@ -47,7 +44,7 @@ const data = {
 module.exports = grunt => {
 
     grunt.initConfig({
-        clean: ['dist', 'temp', '.tmp'],
+        clean: ['dist', 'temp', '.tmp'], // 清理临时文件
         sass: {
             options: {
                 implementation: sass,
@@ -184,11 +181,16 @@ module.exports = grunt => {
 
     loadGruntTasks(grunt)
 
+    // 编译 sass, es6+, swig模板文件
     grunt.registerTask('compile', ['sass', 'babel', 'swigtemplates'])
 
+    // 开启开发服务器并监听文件变化
     grunt.registerTask('serve', ['compile', 'browserSync:devServer', 'watch'])
 
+    // 将开发文件编译，压缩，打包生成生产目录
     grunt.registerTask('build', ['clean', 'compile',  'useminPrepare', 'concat:generated', 'cssmin:generated', 'uglify:generated', 'usemin', 'htmlmin', 'copy'])
 
+    // 开启生产服务器，检查生成的文件
     grunt.registerTask('start', ['build', 'browserSync:distServer'])
+
 }
