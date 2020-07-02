@@ -188,7 +188,16 @@ module.exports = grunt => {
     grunt.registerTask('serve', ['compile', 'browserSync:devServer', 'watch'])
 
     // 将开发文件编译，压缩，打包生成生产目录
-    grunt.registerTask('build', ['clean', 'compile',  'useminPrepare', 'concat:generated', 'cssmin:generated', 'uglify:generated', 'usemin', 'htmlmin', 'copy'])
+    grunt.registerTask(
+        'build',
+        [
+            'clean',
+            'compile',
+            'useminPrepare', 'concat:generated', 'cssmin:generated', 'uglify:generated', 'usemin',
+            'htmlmin',
+            'copy'
+        ]
+    )
 
     // 开启生产服务器，检查生成的文件
     grunt.registerTask('start', ['build', 'browserSync:distServer'])
